@@ -1,0 +1,35 @@
+# DockNudge starter config
+# Secrets should come from environment variables, not hardcoded values.
+
+version: 1
+docker_host: unix:///var/run/docker.sock
+cooldown: 10m
+log_level: info
+
+channels:
+  slack_ops:
+    type: slack
+    webhook_url: ${SLACK_WEBHOOK_URL}
+  gchat_ops:
+    type: gchat
+    webhook_url: ${GCHAT_WEBHOOK_URL}
+
+routes:
+  default:
+    send_to: [slack_ops]
+
+rules:
+  oom:
+    enabled: true
+  die:
+    enabled: true
+    ignore_exit_codes: [0, 143]
+  unhealthy:
+    enabled: true
+  restart_burst:
+    enabled: true
+    threshold: 3
+    window: 10m
+  unexpected_stop:
+    enabled: true
+    lookback: 30s
